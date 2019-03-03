@@ -1,25 +1,32 @@
 language: ruby
 
+sudo: false
+
 cache:
   apt: true
-  bundler: true # caching to speed up dependency installation
+  bundler: true
   directories:
   - $TRAVIS_BUILD_DIR/tmp/.htmlproofer
 
-rvm:
-- 2.4.1
+notifications:
+  email:
+    on_success: never
+
+env:
+  global:
+  - JEKYLL_ENV=production
+  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
 
 addons:
   apt:
     packages:
-    - libcurl4-openssl-dev # required to avoid SSL errors
+    - libcurl4-openssl-dev # resolve SSL issue of htmlproofer
 
-env:
-  global:
-  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true # speeds up installation of html-proofer
+rvm:
+- 2.4.1
 
 script:
-- bundle exec jekyll build
+- bundle exec jekyll build --trace
 - bundle exec htmlproofer ./_site
   --check-external-hash
   --check-opengraph
@@ -28,3 +35,6 @@ script:
   --check-img-http
   --enforce-https
   --timeframe 4w
+
+after_success:
+- find ./_site -type f
