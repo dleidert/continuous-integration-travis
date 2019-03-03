@@ -1,5 +1,11 @@
 language: ruby
-cache: bundler # caching to speed up dependency installation
+
+cache:
+  apt: true
+  bundler: true # caching to speed up dependency installation
+  directories:
+  - $TRAVIS_BUILD_DIR/tmp/.htmlproofer
+
 rvm:
 - 2.4.1
 
@@ -14,4 +20,11 @@ env:
 
 script:
 - bundle exec jekyll build
-- bundle exec htmlproofer ./_site --check-html
+- bundle exec htmlproofer ./_site
+  --check-external-hash
+  --check-opengraph
+  --check-sri
+  --check-html
+  --check-img-http
+  --enforce-https
+  --timeframe 4w
